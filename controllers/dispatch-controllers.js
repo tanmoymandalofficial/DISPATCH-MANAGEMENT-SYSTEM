@@ -1,21 +1,24 @@
+const { set } = require("mongoose");
 const Dispatch = require("../models/dispatch");
 
 const getDispatch = async (req, res) => {
   // req.param.status = all / new / intransit / riched
   try {
-    const { status } = req.params;
-    let dispatches;
+    const { status = "all" } = req.params;
+    let dispatches; 
     if (status === "all") {
       dispatches = await Dispatch.find();
-    } else if (
-      status === "new" ||
-      status === "intransit" ||
-      status === "riched"
-    ) {
-      dispatches = await Dispatch.find({ status });
     } else {
       dispatches = await Dispatch.find({ status });
+      console.log(dispatches);
     }
+
+    if (dispatches.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Dispatch data not found" });
+    }
+
     res.status(200).json({
       success: true,
       message: "Dispatch data fetched successfully",
@@ -66,5 +69,27 @@ const deleteDispatch = async (req, res) => {
     res.send(e);
   }
 };
+
+// delete the dispatch after 1 day when this controller is called and also cancel the set timeout
+const deactiveDispatch = async (req, res) => {
+  let timeoutId;
+  try {
+    const { id } = req.params;
+    timeoutId = setTimeout(async () => {
+      await Dispatch.updateOne({ _id: id }, { $set: { isActive: "deactive" } });
+    }, 86400000);
+
+    res.status(200).json({
+      success: true,
+      message: "Dispatch deactive successfully",
+      timeoutId,
+    });
+
+  } catch (e) {
+    console.log(e);
+    res.send(e);
+  }
+};
+
 
 module.exports = { getDispatch, addDispatch, updateStatus, deleteDispatch };

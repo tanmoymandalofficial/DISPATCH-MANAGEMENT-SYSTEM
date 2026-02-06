@@ -34,8 +34,7 @@ const DispatchSchema = new mongoose.Schema({
         trim : true,
         default : 'new' 
     },
-    isActive : {type: Boolean, default: true},
-    createdAt : { type: Date, default: Date.now  }
-})
+    isActive : {type: Boolean, default: true}
+},{timestamps : true});
 
 module.exports = mongoose.model('dispatch', DispatchSchema);

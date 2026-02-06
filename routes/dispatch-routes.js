@@ -5,6 +5,7 @@ const {getDispatch, addDispatch, updateStatus, deleteDispatch} = require('../con
 const router = express.Router();
 
 // create all routes
+router.get('/get', getDispatch);
 router.get('/get/:status', getDispatch);
 router.post('/add', addDispatch);
 router.put('/update/:id', updateStatus);
