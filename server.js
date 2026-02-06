@@ -3,6 +3,7 @@ const express = require("express");
 const connectToDb = require("./database/db");
 const dispatchRoutes = require("./routes/dispatch-routes");
 const userRoutes = require("./routes/user-routes");
+const authMiddleware = require('./middleware/auth-middlewate');
 
 // Main app
 const app = express();
@@ -14,7 +15,7 @@ connectToDb();
 app.use(express.json());
 
 // router misddleware
-app.use("/api/dispatch", dispatchRoutes);
+app.use("/api/dispatch", authMiddleware, dispatchRoutes);
 app.use("/api/user", userRoutes);
 
 

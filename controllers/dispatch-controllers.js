@@ -2,6 +2,8 @@ const { set } = require("mongoose");
 const Dispatch = require("../models/dispatch");
 
 const getDispatch = async (req, res) => {
+  const userInfo = req.userInfo;
+
   // req.param.status = all / new / intransit / riched
   try {
     const { status = "all" } = req.params;
@@ -10,19 +12,20 @@ const getDispatch = async (req, res) => {
       dispatches = await Dispatch.find();
     } else {
       dispatches = await Dispatch.find({ status });
-      console.log(dispatches);
+      // console.log(dispatches);
     }
 
     if (dispatches.length === 0) {
       return res
         .status(400)
-        .json({ success: false, message: "Dispatch data not found" });
+        .json({ success: false, message: "Dispatch data not found", userInfo });
     }
 
     res.status(200).json({
       success: true,
       message: "Dispatch data fetched successfully",
       data: dispatches,
+      userInfo,
     });
   } catch (e) {
     console.log(e);
@@ -37,7 +40,7 @@ const addDispatch = async (req, res) => {
     let newAddedDispatch = await Dispatch.create(newDispatchData);
 
     if (newAddedDispatch) {
-      console.log(newAddedDispatch);
+      // console.log(newAddedDispatch);
       res.status(201).json({
         success: true,
         massage: "Dispatch added successfully",
