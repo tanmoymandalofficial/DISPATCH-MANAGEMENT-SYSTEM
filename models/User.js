@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['admin', 'user'], // only for admin and user      
         default: 'user'
+    },
+    islogin: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

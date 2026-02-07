@@ -20,6 +20,7 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // console.log(salt);
     // console.log(hashedPassword);
 
     // user registration
@@ -62,6 +63,7 @@ const login = async (req, res) => {
 
     // check if password is correct
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    console.log(isPasswordCorrect);
 
     if (!isPasswordCorrect) {
       return res
@@ -77,10 +79,14 @@ const login = async (req, res) => {
      
     }, process.env.JWT_SECRET_KEY, {expiresIn: "1h"}); // it will expire in 1 hour
 
+    user.islogin = true;
+    await user.save();
+
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
-      accessToken
+      accessToken,
+      'islogin': user.islogin
     }); 
 
 
